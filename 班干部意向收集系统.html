@@ -1,0 +1,3079 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班干部意向收集系统 - 园林景区主题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap">
+    <style>
+        /* 完整CSS样式，保持原样 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: #f5f7f2;
+            color: #333;
+            line-height: 1.6;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M10,10 C20,5 40,15 50,10 C60,5 80,15 90,10 L90,90 C80,85 60,95 50,90 C40,85 20,95 10,90 Z" fill="%23e8f4e8" opacity="0.3"/><circle cx="30" cy="30" r="8" fill="%23c8e6c9" opacity="0.4"/><circle cx="70" cy="70" r="6" fill="%23a5d6a7" opacity="0.4"/><circle cx="20" cy="60" r="5" fill="%2381c784" opacity="0.4"/></svg>');
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 园林主题装饰 */
+        .garden-decoration {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.15;
+        }
+        
+        .garden-decoration.top-left {
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #8bc34a 0%, transparent 70%);
+        }
+        
+        .garden-decoration.top-right {
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #4caf50 0%, transparent 70%);
+        }
+        
+        .garden-decoration.bottom-left {
+            bottom: 0;
+            left: 0;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #689f38 0%, transparent 70%);
+        }
+        
+        .garden-decoration.bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #388e3c 0%, transparent 70%);
+        }
+        
+        /* 顶部园林风格标题 */
+        .garden-header {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            padding: 40px 0;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.2);
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #c8e6c9;
+        }
+        
+        .garden-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(90deg, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0);
+        }
+        
+        .garden-header::after {
+            content: "🌳 🏯 🎋 🌸";
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 24px;
+            opacity: 0.3;
+        }
+        
+        .header-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
+        }
+        
+        .header-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            padding: 0 20px;
+        }
+        
+        .header-subtitle::before, .header-subtitle::after {
+            content: "✿";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .header-subtitle::before {
+            left: 0;
+        }
+        
+        .header-subtitle::after {
+            right: 0;
+        }
+        
+        .role-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .role-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .role-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .role-btn.active {
+            background: white;
+            color: #1b5e20;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 园林风格卡片 */
+        .garden-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.1);
+            margin-bottom: 30px;
+            border: 2px solid #c8e6c9;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .garden-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #4caf50, #8bc34a, #cddc39);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #1b5e20;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e8f5e9;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .section-title i {
+            margin-right: 12px;
+            color: #4caf50;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+        }
+        
+        /* 岗位卡片设计 */
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .position-card {
+            background-color: #f9fdf8;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e8f5e9;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .position-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(76, 175, 80, 0.15);
+            border-color: #4caf50;
+        }
+        
+        .position-card::before {
+            content: "🌿";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0.2;
+            font-size: 1.5rem;
+        }
+        
+        .position-card h3 {
+            font-size: 1.3rem;
+            color: #1b5e20;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .position-card p {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .applicant-count {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #4caf50;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .important-role {
+            background-color: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+        }
+        
+        .special-role {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+            border: 1px solid #e1bee7;
+        }
+        
+        .academic-role {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .manage-role {
+            background-color: #e0f2f1;
+            color: #00695c;
+            border: 1px solid #b2dfdb;
+        }
+        
+        .custom-role {
+            background-color: #fff8e1;
+            color: #ff8f00;
+            border: 1px solid #ffd54f;
+        }
+        
+        /* 表单设计 */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #1b5e20;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #c8e6c9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #f9fdf8;
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+            background-color: white;
+        }
+        
+        .priority-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .priority-group {
+                flex-direction: column;
+            }
+        }
+        
+        .priority-item {
+            flex: 1;
+        }
+        
+        .priority-item label {
+            font-size: 0.95rem;
+            font-weight: normal;
+        }
+        
+        /* 自定义岗位部分 */
+        .custom-position-toggle {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0f9f0;
+            border-radius: 10px;
+            border: 2px dashed #a5d6a7;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .custom-position-toggle:hover {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        
+        .custom-position-toggle i {
+            font-size: 1.5rem;
+            color: #4caf50;
+            margin-right: 15px;
+        }
+        
+        .custom-position-form {
+            display: none;
+            padding: 20px;
+            background-color: #f9fdf8;
+            border-radius: 10px;
+            border: 2px solid #c8e6c9;
+            margin-top: 10px;
+        }
+        
+        .custom-position-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .custom-position-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: #fff8e1;
+            color: #ff8f00;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-left: 10px;
+            border: 1px solid #ffd54f;
+        }
+        
+        .custom-position-badge i {
+            margin-right: 5px;
+        }
+        
+        /* 按钮设计 */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+            font-family: 'Noto Serif SC', serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #78909c 0%, #546e7a 100%);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #546e7a 0%, #78909c 100%);
+            box-shadow: 0 8px 20px rgba(84, 110, 122, 0.3);
+        }
+        
+        .btn-small {
+            width: auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-top: 0;
+        }
+        
+        /* 登录界面 */
+        .login-container {
+            max-width: 500px;
+            margin: 60px auto;
+        }
+        
+        .login-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(46, 125, 50, 0.15);
+            border: 3px solid #c8e6c9;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-card::before {
+            content: "🎋";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.1;
+        }
+        
+        .login-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #1b5e20;
+            margin-bottom: 30px;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        
+        .login-icon {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #4caf50;
+        }
+        
+        /* 选项卡设计 */
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e8f5e9;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 14px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            color: #4caf50;
+        }
+        
+        .tab.active {
+            color: #1b5e20;
+            border-bottom: 3px solid #4caf50;
+        }
+        
+        .tab-content {
+            display: none;
+            padding-top: 10px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 申请者列表 */
+        .applicants-list {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .applicants-list.active {
+            display: block;
+        }
+        
+        .applicant-item {
+            background-color: #f9fdf8;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e8f5e9;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .applicant-item:hover {
+            border-color: #4caf50;
+            transform: translateX(5px);
+        }
+        
+        .applicant-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .applicant-name {
+            font-weight: bold;
+            color: #1b5e20;
+            font-size: 1.1rem;
+        }
+        
+        .applicant-priorities span {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 4px 10px;
+            background-color: #e8f5e9;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .applicant-priorities .priority1 {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        
+        .applicant-experience {
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #c8e6c9;
+        }
+        
+        /* 我的申请 */
+        .my-application-item {
+            background-color: #f9fdf8;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #e8f5e9;
+            position: relative;
+        }
+        
+        .my-application-item::before {
+            content: "🌸";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            opacity: 0.3;
+        }
+        
+        .my-application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .my-application-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status-reviewed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        /* 修改密码面板 */
+        .change-password-panel {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px dashed #c8e6c9;
+        }
+        
+        /* 页脚设计 */
+        .garden-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px 0;
+            border-top: 2px solid #c8e6c9;
+            color: #666;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        
+        .garden-footer::before {
+            content: "🎍 🏮 🎐 🌱";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f5f7f2;
+            padding: 0 20px;
+        }
+        
+        /* 加载状态样式 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #e8f5e9;
+            border-top: 6px solid #4caf50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-left: 20px;
+            font-size: 1.2rem;
+            color: #1b5e20;
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        /* 提示消息样式 */
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: #1b5e20;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 9998;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1000px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-title {
+                font-size: 2.5rem;
+            }
+            
+            .positions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2rem;
+            }
+            
+            .positions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .role-switch {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            
+            .applicant-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        /* 隐藏/显示面板 */
+        .admin-panel, .student-panel, .login-panel {
+            display: none;
+        }
+        
+        .active-panel {
+            display: block;
+        }
+        
+        /* 园林图标装饰 */
+        .garden-icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+        
+        /* 自定义岗位指示器 */
+        .custom-indicator {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 10px;
+            color: #ff8f00;
+            font-size: 0.9rem;
+        }
+        
+        .custom-indicator i {
+            margin-right: 5px;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #c8e6c9;
+        }
+        
+        /* 自定义岗位列表 */
+        .custom-positions-list {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9fdf8;
+            border-radius: 10px;
+            border: 2px dashed #ffd54f;
+        }
+        
+        .custom-position-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #fff8e1;
+            border-radius: 8px;
+            border: 1px solid #ffd54f;
+        }
+        
+        .custom-position-name {
+            font-weight: bold;
+            color: #ff8f00;
+        }
+        
+        .custom-position-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        /* 网络状态指示器 */
+        .sync-status {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .sync-queue-count {
+            background: #ff9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+        
+        /* 班级管理面板 */
+        .class-manage-panel {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 12px;
+            border: 2px solid #c8e6c9;
+        }
+        
+        .class-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .class-info-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .class-code-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed #4caf50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .class-code {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1b5e20;
+            margin: 10px 0;
+            letter-spacing: 3px;
+        }
+        
+        .invite-link {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .invite-link input {
+            flex: 1;
+            font-family: monospace;
+            background: #f5f5f5;
+        }
+        
+        /* 二维码 */
+        .qr-code-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #c8e6c9;
+        }
+        
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 15px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #4caf50;
+            border-radius: 10px;
+        }
+        
+        /* 分享按钮 */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .share-btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        /* 公告板 */
+        .announcement-board {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            border-radius: 12px;
+            border: 2px solid #ffd54f;
+        }
+        
+        .announcement-title {
+            color: #ff8f00;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* 统计数据卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #c8e6c9;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1b5e20;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* 时间轴 */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #c8e6c9;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e8f5e9;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: #4caf50;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+        
+        /* 班级选择器 */
+        .class-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .class-option {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: 2px solid #c8e6c9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .class-option:hover {
+            background: #e8f5e9;
+        }
+        
+        .class-option.active {
+            background: #4caf50;
+            color: white;
+            border-color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载遮罩层 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">数据加载中... 请稍候</div>
+    </div>
+    
+    <!-- 提示消息 -->
+    <div class="toast-message" id="toastMessage"></div>
+    
+    <!-- 园林装饰元素 -->
+    <div class="garden-decoration top-left"></div>
+    <div class="garden-decoration top-right"></div>
+    <div class="garden-decoration bottom-left"></div>
+    <div class="garden-decoration bottom-right"></div>
+    
+    <div class="container">
+        <!-- 登录界面 -->
+        <div class="login-panel active-panel" id="loginPanel">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <h2 class="login-title">班干部意向收集系统</h2>
+                    
+                    <div class="tab-container">
+                        <div class="tabs">
+                            <div class="tab active" data-tab="login">登录</div>
+                            <div class="tab" data-tab="register">注册班级</div>
+                            <div class="tab" data-tab="join">加入班级</div>
+                        </div>
+                        
+                        <!-- 登录标签页 -->
+                        <div class="tab-content active" id="login-tab">
+                            <div class="form-group">
+                                <label for="loginClassCode"><i class="fas fa-school garden-icon"></i> 班级代码</label>
+                                <input type="text" id="loginClassCode" placeholder="请输入班级代码">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="loginUsername"><i class="fas fa-user garden-icon"></i> 身份</label>
+                                <select id="loginUsername" class="login-input">
+                                    <option value="">请选择登录身份</option>
+                                    <option value="student">学生</option>
+                                    <option value="teacher">班主任</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="studentIdGroup">
+                                <label for="studentId"><i class="fas fa-id-card garden-icon"></i> 学号/姓名</label>
+                                <input type="text" id="studentId" placeholder="请输入学号或姓名" class="login-input">
+                            </div>
+                            
+                            <div class="form-group" id="teacherPasswordGroup" style="display: none;">
+                                <label for="teacherPassword"><i class="fas fa-lock garden-icon"></i> 密码</label>
+                                <input type="password" id="teacherPassword" placeholder="请输入班主任密码" class="login-input">
+                            </div>
+                            
+                            <button class="btn" id="loginBtn">
+                                <i class="fas fa-sign-in-alt"></i> 登录
+                            </button>
+                        </div>
+                        
+                        <!-- 注册班级标签页 -->
+                        <div class="tab-content" id="register-tab">
+                            <div class="form-group">
+                                <label for="teacherName"><i class="fas fa-user-tie garden-icon"></i> 班主任姓名</label>
+                                <input type="text" id="teacherName" placeholder="请输入您的姓名">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="className"><i class="fas fa-graduation-cap garden-icon"></i> 班级名称</label>
+                                <input type="text" id="className" placeholder="例如：高三(1)班">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="teacherEmail"><i class="fas fa-envelope garden-icon"></i> 邮箱（可选）</label>
+                                <input type="email" id="teacherEmail" placeholder="用于接收通知">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="registerPassword"><i class="fas fa-lock garden-icon"></i> 设置密码</label>
+                                <input type="password" id="registerPassword" placeholder="设置班主任登录密码">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword"><i class="fas fa-lock garden-icon"></i> 确认密码</label>
+                                <input type="password" id="confirmPassword" placeholder="请再次输入密码">
+                            </div>
+                            
+                            <button class="btn" id="registerBtn">
+                                <i class="fas fa-plus-circle"></i> 创建班级
+                            </button>
+                        </div>
+                        
+                        <!-- 加入班级标签页 -->
+                        <div class="tab-content" id="join-tab">
+                            <div class="form-group">
+                                <label for="joinClassCode"><i class="fas fa-school garden-icon"></i> 班级代码</label>
+                                <input type="text" id="joinClassCode" placeholder="请输入班级代码">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="joinStudentName"><i class="fas fa-user garden-icon"></i> 学生姓名</label>
+                                <input type="text" id="joinStudentName" placeholder="请输入您的姓名">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="joinStudentId"><i class="fas fa-id-card garden-icon"></i> 学号（可选）</label>
+                                <input type="text" id="joinStudentId" placeholder="请输入学号（可选）">
+                            </div>
+                            
+                            <button class="btn" id="joinBtn">
+                                <i class="fas fa-user-plus"></i> 加入班级
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: center; color: #666; font-size: 0.9rem;">
+                        <p>🌿 欢迎使用班干部意向收集系统 🌿</p>
+                        <p>支持多班级管理，数据云端同步</p>
+                        <p>班主任可创建班级，学生使用班级代码加入</p>
+                        <div style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-radius: 8px;">
+                            <p><strong>演示信息：</strong></p>
+                            <p>班级代码: <span style="color: #1b5e20; font-weight: bold;">DEMO123</span></p>
+                            <p>学生: 任意姓名</p>
+                            <p>班主任密码: <span style="color: #1b5e20; font-weight: bold;">123456</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 系统主界面 -->
+        <div id="mainSystem" style="display: none;">
+            <!-- 园林风格头部 -->
+            <header class="garden-header">
+                <div class="role-switch">
+                    <button class="role-btn active" id="studentBtn">
+                        <i class="fas fa-user-graduate"></i> 学生端
+                    </button>
+                    <button class="role-btn" id="teacherBtn">
+                        <i class="fas fa-chalkboard-teacher"></i> 班主任端
+                    </button>
+                    <button class="role-btn" id="manageBtn">
+                        <i class="fas fa-cog"></i> 班级管理
+                    </button>
+                    <button class="role-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> 退出
+                    </button>
+                </div>
+                <h1 class="header-title" id="classTitle">班干部意向收集系统</h1>
+                <p class="header-subtitle" id="classSubtitle">庭园深深深几许，班干选拔聚群英</p>
+                <div class="sync-status" id="syncStatus">
+                    <i class="fas fa-wifi" style="color: #4caf50;"></i>
+                    <span>在线</span>
+                    <span id="syncQueueCount" class="sync-queue-count" style="display: none;"></span>
+                </div>
+            </header>
+            
+            <!-- 公告板 -->
+            <div class="announcement-board" id="announcementBoard">
+                <h3 class="announcement-title"><i class="fas fa-bullhorn"></i> 公告</h3>
+                <div id="announcementContent">
+                    欢迎使用班干部意向收集系统！请同学们在规定时间内提交意向申请。
+                </div>
+            </div>
+            
+            <!-- 统计数据 -->
+            <div class="garden-card" id="statsCard" style="display: none;">
+                <h2 class="section-title"><i class="fas fa-chart-line"></i> 班级统计</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- 统计数据动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 学生端界面 -->
+            <div class="student-panel active-panel" id="studentPanel">
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-list-ol"></i> 班干部岗位意向填报</h2>
+                    <p style="margin-bottom: 20px; color: #666;">请根据自身兴趣与能力，在下方园林中选择心仪的岗位，每人可填报三个志愿。您可以选择现有岗位，也可以自定义岗位意向。</p>
+                    
+                    <div class="tab-container">
+                        <div class="tabs">
+                            <div class="tab active" data-tab="important">🏯 重要岗位</div>
+                            <div class="tab" data-tab="special">🎋 专项岗位</div>
+                            <div class="tab" data-tab="academic">📚 学科岗位</div>
+                            <div class="tab" data-tab="manage">🔑 承包管理</div>
+                            <div class="tab" data-tab="custom">✨ 自定义岗位</div>
+                        </div>
+                        
+                        <div class="tab-content active" id="important-tab">
+                            <div class="positions-grid" id="importantPositions">
+                                <!-- 重要岗位卡片将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="special-tab">
+                            <div class="positions-grid" id="specialPositions">
+                                <!-- 专项岗位卡片将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="academic-tab">
+                            <div class="positions-grid" id="academicPositions">
+                                <!-- 学科岗位卡片将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="manage-tab">
+                            <div class="positions-grid" id="managePositions">
+                                <!-- 承包管理岗位卡片将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="custom-tab">
+                            <div class="custom-positions-list" id="customPositionsList">
+                                <!-- 自定义岗位列表将通过JavaScript动态生成 -->
+                            </div>
+                            
+                            <div class="custom-position-toggle" id="customPositionToggle">
+                                <i class="fas fa-plus-circle"></i>
+                                <div>
+                                    <h3 style="color: #1b5e20; margin-bottom: 5px;">添加自定义岗位意向</h3>
+                                    <p style="color: #666; font-size: 0.95rem;">如果您有独特的班级管理想法，可以在此添加自定义岗位</p>
+                                </div>
+                            </div>
+                            
+                            <div class="custom-position-form" id="customPositionForm">
+                                <div class="form-group">
+                                    <label for="customPositionName"><i class="fas fa-pen garden-icon"></i> 自定义岗位名称</label>
+                                    <input type="text" id="customPositionName" placeholder="请输入您想担任的自定义岗位名称">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="customPositionDescription"><i class="fas fa-file-alt garden-icon"></i> 岗位职责描述</label>
+                                    <textarea id="customPositionDescription" rows="3" placeholder="请描述该岗位的职责和工作内容"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="customPositionReason"><i class="fas fa-lightbulb garden-icon"></i> 申请理由与优势</label>
+                                    <textarea id="customPositionReason" rows="3" placeholder="请说明您申请该岗位的理由以及您的优势"></textarea>
+                                </div>
+                                
+                                <button class="btn btn-small" id="addCustomPositionBtn">
+                                    <i class="fas fa-plus"></i> 添加自定义岗位
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-edit"></i> 意向填报</h2>
+                    <form id="intentionForm">
+                        <div class="form-group">
+                            <label for="name"><i class="fas fa-user garden-icon"></i> 姓名</label>
+                            <input type="text" id="name" name="name" required placeholder="请输入您的姓名">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="studentIdDisplay"><i class="fas fa-id-card garden-icon"></i> 学号</label>
+                            <input type="text" id="studentIdDisplay" name="studentId" placeholder="请输入学号（可选）">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="class"><i class="fas fa-graduation-cap garden-icon"></i> 班级</label>
+                            <input type="text" id="class" name="class" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-star garden-icon"></i> 岗位意向 (按优先级从高到低)</label>
+                            <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">您可以选择现有岗位或已添加的自定义岗位</p>
+                            <div class="priority-group">
+                                <div class="priority-item">
+                                    <label for="priority1">第一志愿</label>
+                                    <select id="priority1" name="priority1" required>
+                                        <option value="">请选择第一志愿</option>
+                                        <!-- 选项将通过JavaScript动态生成 -->
+                                    </select>
+                                </div>
+                                <div class="priority-item">
+                                    <label for="priority2">第二志愿</label>
+                                    <select id="priority2" name="priority2">
+                                        <option value="">请选择第二志愿</option>
+                                        <!-- 选项将通过JavaScript动态生成 -->
+                                    </select>
+                                </div>
+                                <div class="priority-item">
+                                    <label for="priority3">第三志愿</label>
+                                    <select id="priority3" name="priority3">
+                                        <option value="">请选择第三志愿</option>
+                                        <!-- 选项将通过JavaScript动态生成 -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="experience"><i class="fas fa-history garden-icon"></i> 相关经验与优势</label>
+                            <textarea id="experience" name="experience" rows="4" placeholder="请简要说明您担任班干部的相关经验、个人优势及竞选理由..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> 提交意向
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-clipboard-check"></i> 我的报名情况</h2>
+                    <div id="myApplicationsContainer">
+                        <div class="empty-state">
+                            <i class="fas fa-seedling"></i>
+                            <p>您还没有提交任何意向，请在上方表格中填写并提交</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 班主任端界面 -->
+            <div class="admin-panel" id="adminPanel">
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-chart-bar"></i> 班干部岗位报名情况统计</h2>
+                    <p style="margin-bottom: 20px; color: #666;">点击下方岗位卡片查看该岗位的报名学生信息，您可以在此管理所有报名数据。</p>
+                    
+                    <div class="position-category">
+                        <h3 style="color: #1b5e20; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #4caf50;">🏯 重要岗位</h3>
+                        <div class="positions-grid" id="adminImportantPositions">
+                            <!-- 重要岗位卡片将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="position-category">
+                        <h3 style="color: #1b5e20; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #4caf50;">🎋 专项岗位</h3>
+                        <div class="positions-grid" id="adminSpecialPositions">
+                            <!-- 专项岗位卡片将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="position-category">
+                        <h3 style="color: #1b5e20; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #4caf50;">📚 学科岗位</h3>
+                        <div class="positions-grid" id="adminAcademicPositions">
+                            <!-- 学科岗位卡片将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="position-category">
+                        <h3 style="color: #1b5e20; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #4caf50;">🔑 承包管理岗位</h3>
+                        <div class="positions-grid" id="adminManagePositions">
+                            <!-- 承包管理岗位卡片将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div class="position-category">
+                        <h3 style="color: #1b5e20; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #ff8f00;">✨ 自定义岗位</h3>
+                        <div class="positions-grid" id="adminCustomPositions">
+                            <!-- 自定义岗位卡片将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 40px; text-align: center;">
+                        <button class="btn btn-secondary" id="exportDataBtn">
+                            <i class="fas fa-file-excel"></i> 导出报名数据
+                        </button>
+                        <button class="btn" id="generateReportBtn" style="margin-left: 10px;">
+                            <i class="fas fa-chart-pie"></i> 生成分析报告
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="garden-card" id="adminResultsSection">
+                    <h2 class="section-title"><i class="fas fa-users"></i> 岗位报名详情</h2>
+                    <div id="adminResultsContainer">
+                        <div class="empty-state">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <p>点击上方岗位卡片查看该岗位的报名学生信息</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 班级管理界面 -->
+            <div class="admin-panel" id="managePanel">
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-cogs"></i> 班级管理</h2>
+                    
+                    <div class="class-info">
+                        <div class="class-info-item">
+                            <h3 style="color: #1b5e20; margin-bottom: 10px;">班级信息</h3>
+                            <p><strong>班级名称:</strong> <span id="currentClassName">未设置</span></p>
+                            <p><strong>班主任:</strong> <span id="currentTeacherName">未设置</span></p>
+                            <p><strong>创建时间:</strong> <span id="classCreateTime">未设置</span></p>
+                            <p><strong>学生人数:</strong> <span id="studentCount">0</span> 人</p>
+                            <p><strong>意向提交:</strong> <span id="intentionCount">0</span> 份</p>
+                        </div>
+                        
+                        <div class="class-info-item">
+                            <div class="class-code-box">
+                                <h4 style="color: #1b5e20; margin-bottom: 10px;">班级代码</h4>
+                                <div class="class-code" id="classCode">----</div>
+                                <p style="font-size: 0.9rem; color: #666;">学生使用此代码加入班级</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="invite-link">
+                        <input type="text" id="inviteLink" readonly placeholder="邀请链接">
+                        <button class="btn btn-small" onclick="copyInviteLink()">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
+                    
+                    <div class="qr-code-container">
+                        <div class="qr-code">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <p>扫描二维码加入班级</p>
+                    </div>
+                    
+                    <div class="share-buttons">
+                        <button class="share-btn" onclick="shareClass('wechat')">
+                            <i class="fab fa-weixin"></i> 微信
+                        </button>
+                        <button class="share-btn" onclick="shareClass('qq')">
+                            <i class="fab fa-qq"></i> QQ
+                        </button>
+                        <button class="share-btn" onclick="shareClass('link')">
+                            <i class="fas fa-link"></i> 复制链接
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-edit"></i> 编辑班级设置</h2>
+                    
+                    <div class="form-group">
+                        <label for="editClassName"><i class="fas fa-graduation-cap garden-icon"></i> 班级名称</label>
+                        <input type="text" id="editClassName" placeholder="修改班级名称">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editAnnouncement"><i class="fas fa-bullhorn garden-icon"></i> 公告内容</label>
+                        <textarea id="editAnnouncement" rows="3" placeholder="输入班级公告"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deadlineDate"><i class="fas fa-calendar-alt garden-icon"></i> 截止日期</label>
+                        <input type="date" id="deadlineDate">
+                    </div>
+                    
+                    <button class="btn" id="saveClassSettingsBtn">
+                        <i class="fas fa-save"></i> 保存设置
+                    </button>
+                </div>
+                
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-user-shield"></i> 修改班主任密码</h2>
+                    
+                    <div class="form-group">
+                        <label for="currentPassword">当前密码</label>
+                        <input type="password" id="currentPassword" placeholder="请输入当前密码">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newTeacherPassword">新密码</label>
+                        <input type="password" id="newTeacherPassword" placeholder="请输入新密码">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmTeacherPassword">确认新密码</label>
+                        <input type="password" id="confirmTeacherPassword" placeholder="请再次输入新密码">
+                    </div>
+                    
+                    <button class="btn" id="changePasswordBtn">
+                        <i class="fas fa-sync-alt"></i> 修改密码
+                    </button>
+                </div>
+                
+                <div class="garden-card">
+                    <h2 class="section-title"><i class="fas fa-users"></i> 学生管理</h2>
+                    
+                    <div id="studentsList">
+                        <div class="empty-state">
+                            <i class="fas fa-user-graduate"></i>
+                            <p>暂无学生加入</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 页脚 -->
+            <footer class="garden-footer">
+                <p>© 2023 班干部意向收集系统 | 技术支持: 教育技术中心 | 数据安全: 云端加密存储</p>
+                <p>🎍 庭园育才，班干聚贤 🎍</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // 模拟云存储API
+        class CloudStorage {
+            constructor() {
+                this.baseUrl = 'https://api.classmonitor.com';
+                this.cache = new Map();
+                this.init();
+            }
+            
+            init() {
+                // 模拟网络状态
+                this.isOnline = navigator.onLine;
+                window.addEventListener('online', () => {
+                    this.isOnline = true;
+                    this.syncPendingChanges();
+                });
+                window.addEventListener('offline', () => {
+                    this.isOnline = false;
+                });
+            }
+            
+            // 生成唯一ID
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+            
+            // 模拟API请求
+            async apiRequest(endpoint, method = 'GET', data = null) {
+                // 模拟网络延迟
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const key = `${method}:${endpoint}:${JSON.stringify(data)}`;
+                
+                if (method === 'GET' && this.cache.has(key)) {
+                    return this.cache.get(key);
+                }
+                
+                // 模拟API响应
+                let response;
+                switch (endpoint) {
+                    case '/classes':
+                        response = this.handleClassesRequest(method, data);
+                        break;
+                    case '/intentions':
+                        response = this.handleIntentionsRequest(method, data);
+                        break;
+                    case '/positions':
+                        response = this.handlePositionsRequest(method, data);
+                        break;
+                    case '/auth':
+                        response = this.handleAuthRequest(method, data);
+                        break;
+                    default:
+                        response = { success: false, message: 'API不存在' };
+                }
+                
+                if (response.success && method === 'GET') {
+                    this.cache.set(key, response);
+                }
+                
+                return response;
+            }
+            
+            handleClassesRequest(method, data) {
+                let classes = JSON.parse(localStorage.getItem('cloud_classes') || '{}');
+                
+                if (method === 'POST') {
+                    // 创建班级
+                    const classId = this.generateId();
+                    const classCode = this.generateClassCode();
+                    
+                    const newClass = {
+                        id: classId,
+                        code: classCode,
+                        name: data.name,
+                        teacherName: data.teacherName,
+                        teacherEmail: data.teacherEmail,
+                        password: data.password,
+                        createdAt: new Date().toISOString(),
+                        students: [],
+                        announcements: [],
+                        settings: {
+                            deadline: null,
+                            allowCustomPositions: true
+                        }
+                    };
+                    
+                    classes[classId] = newClass;
+                    localStorage.setItem('cloud_classes', JSON.stringify(classes));
+                    
+                    return {
+                        success: true,
+                        data: newClass,
+                        message: '班级创建成功'
+                    };
+                }
+                
+                if (method === 'GET' && data && data.code) {
+                    // 根据代码查找班级
+                    const classEntry = Object.values(classes).find(c => c.code === data.code);
+                    if (classEntry) {
+                        return {
+                            success: true,
+                            data: classEntry
+                        };
+                    }
+                    return {
+                        success: false,
+                        message: '班级不存在'
+                    };
+                }
+                
+                return { success: false, message: '无效请求' };
+            }
+            
+            handleIntentionsRequest(method, data) {
+                const classId = data.classId;
+                let intentions = JSON.parse(localStorage.getItem(`intentions_${classId}`) || '[]');
+                
+                if (method === 'POST') {
+                    const newIntention = {
+                        id: this.generateId(),
+                        ...data,
+                        submittedAt: new Date().toISOString(),
+                        status: 'pending'
+                    };
+                    
+                    intentions.push(newIntention);
+                    localStorage.setItem(`intentions_${classId}`, JSON.stringify(intentions));
+                    
+                    return {
+                        success: true,
+                        data: newIntention
+                    };
+                }
+                
+                if (method === 'GET') {
+                    return {
+                        success: true,
+                        data: intentions
+                    };
+                }
+                
+                return { success: false, message: '无效请求' };
+            }
+            
+            handlePositionsRequest(method, data) {
+                const classId = data.classId;
+                let positions = JSON.parse(localStorage.getItem(`positions_${classId}`) || '[]');
+                
+                if (positions.length === 0) {
+                    // 初始化默认岗位
+                    positions = [...basePositions];
+                    localStorage.setItem(`positions_${classId}`, JSON.stringify(positions));
+                }
+                
+                if (method === 'GET') {
+                    return {
+                        success: true,
+                        data: positions
+                    };
+                }
+                
+                if (method === 'POST' && data.custom) {
+                    const newPosition = {
+                        id: this.generateId(),
+                        ...data,
+                        category: 'custom',
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    positions.push(newPosition);
+                    localStorage.setItem(`positions_${classId}`, JSON.stringify(positions));
+                    
+                    return {
+                        success: true,
+                        data: newPosition
+                    };
+                }
+                
+                return { success: false, message: '无效请求' };
+            }
+            
+            handleAuthRequest(method, data) {
+                const classes = JSON.parse(localStorage.getItem('cloud_classes') || '{}');
+                const classEntry = Object.values(classes).find(c => c.code === data.code);
+                
+                if (!classEntry) {
+                    return {
+                        success: false,
+                        message: '班级不存在'
+                    };
+                }
+                
+                if (data.role === 'teacher') {
+                    if (classEntry.password === data.password) {
+                        return {
+                            success: true,
+                            data: {
+                                classId: classEntry.id,
+                                role: 'teacher',
+                                teacherName: classEntry.teacherName
+                            }
+                        };
+                    }
+                    return {
+                        success: false,
+                        message: '密码错误'
+                    };
+                }
+                
+                if (data.role === 'student') {
+                    // 检查学生是否已存在
+                    let student = classEntry.students.find(s => s.name === data.name);
+                    if (!student) {
+                        student = {
+                            id: this.generateId(),
+                            name: data.name,
+                            studentId: data.studentId,
+                            joinedAt: new Date().toISOString()
+                        };
+                        classEntry.students.push(student);
+                        classes[classEntry.id] = classEntry;
+                        localStorage.setItem('cloud_classes', JSON.stringify(classes));
+                    }
+                    
+                    return {
+                        success: true,
+                        data: {
+                            classId: classEntry.id,
+                            role: 'student',
+                            studentName: student.name,
+                            studentId: student.studentId
+                        }
+                    };
+                }
+                
+                return { success: false, message: '无效身份' };
+            }
+            
+            generateClassCode() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let code = '';
+                for (let i = 0; i < 6; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return code;
+            }
+            
+            async syncPendingChanges() {
+                // 同步待处理更改
+                const pending = JSON.parse(localStorage.getItem('pending_changes') || '[]');
+                if (pending.length === 0) return;
+                
+                for (const change of pending) {
+                    try {
+                        await this.apiRequest(change.endpoint, change.method, change.data);
+                    } catch (error) {
+                        console.error('同步失败:', error);
+                    }
+                }
+                
+                localStorage.removeItem('pending_changes');
+                showToast('数据同步完成', 'success');
+            }
+            
+            // 添加离线缓存
+            async getWithCache(endpoint, params) {
+                const cacheKey = `cache_${endpoint}_${JSON.stringify(params)}`;
+                const cached = localStorage.getItem(cacheKey);
+                
+                if (cached && this.isOnline) {
+                    return JSON.parse(cached);
+                }
+                
+                try {
+                    const result = await this.apiRequest(endpoint, 'GET', params);
+                    if (result.success) {
+                        localStorage.setItem(cacheKey, JSON.stringify(result));
+                    }
+                    return result;
+                } catch (error) {
+                    // 离线时返回缓存数据
+                    if (cached) {
+                        return JSON.parse(cached);
+                    }
+                    throw error;
+                }
+            }
+        }
+        
+        // 班干部岗位数据
+        const basePositions = [
+            // 重要岗位
+            { 
+                id: "monitor", 
+                name: "班长", 
+                description: "全面负责班级工作，协调各班委工作，主持班级会议",
+                category: "important"
+            },
+            { 
+                id: "vice_monitor", 
+                name: "副班长", 
+                description: "协助班长工作，分管纪律和考勤",
+                category: "important"
+            },
+            { 
+                id: "weekly_monitor", 
+                name: "值周班长", 
+                description: "负责一周内的班级日常管理",
+                category: "important"
+            },
+            { 
+                id: "league_secretary", 
+                name: "团支书", 
+                description: "负责班级团支部工作，组织团员活动",
+                category: "important"
+            },
+            
+            // 专项岗位
+            { 
+                id: "boarding_monitor", 
+                name: "住校生班长", 
+                description: "负责住校生的日常管理和宿舍协调",
+                category: "special"
+            },
+            { 
+                id: "day_student_monitor", 
+                name: "通校生班长", 
+                description: "负责通校生的联系和问题反馈",
+                category: "special"
+            },
+            { 
+                id: "health_commissar", 
+                name: "卫生委员", 
+                description: "负责班级卫生安排和检查",
+                category: "special"
+            },
+            { 
+                id: "publicity_commissar", 
+                name: "宣传委员", 
+                description: "负责班级宣传、板报和活动记录",
+                category: "special"
+            },
+            { 
+                id: "organization_commissar", 
+                name: "组织委员", 
+                description: "负责班级活动组织和策划",
+                category: "special"
+            },
+            { 
+                id: "art_commissar", 
+                name: "文艺委员", 
+                description: "负责文艺活动和班级文艺氛围",
+                category: "special"
+            },
+            { 
+                id: "psychology_commissar", 
+                name: "心理委员", 
+                description: "关注同学心理健康，组织心理活动",
+                category: "special"
+            },
+            { 
+                id: "safety_commissar", 
+                name: "安全委员", 
+                description: "负责班级安全教育和安全检查",
+                category: "special"
+            },
+            { 
+                id: "health_leader", 
+                name: "卫生组长", 
+                description: "负责小组卫生安排和检查",
+                category: "special"
+            },
+            
+            // 学科岗位
+            { 
+                id: "study_commissar", 
+                name: "学习委员", 
+                description: "负责学习相关事务，收集学习问题",
+                category: "academic"
+            },
+            { 
+                id: "chinese_representative", 
+                name: "语文科代表", 
+                description: "负责语文作业收发，沟通师生",
+                category: "academic"
+            },
+            { 
+                id: "math_representative", 
+                name: "数学科代表", 
+                description: "负责数学作业收发，沟通师生",
+                category: "academic"
+            },
+            { 
+                id: "english_representative", 
+                name: "英语科代表", 
+                description: "负责英语作业收发，沟通师生",
+                category: "academic"
+            },
+            { 
+                id: "plant_recognition_representative", 
+                name: "植物识别科代表", 
+                description: "负责植物识别相关学科事务",
+                category: "academic"
+            },
+            { 
+                id: "drafting_representative", 
+                name: "制图科代表", 
+                description: "负责制图相关学科事务",
+                category: "academic"
+            },
+            
+            // 承包管理岗位
+            { 
+                id: "locker_manager", 
+                name: "铁皮柜管理员", 
+                description: "负责班级铁皮柜的管理和维护",
+                category: "manage"
+            },
+            { 
+                id: "phone_manager", 
+                name: "手机管理员", 
+                description: "负责班级手机的统一管理",
+                category: "manage"
+            },
+            { 
+                id: "flower_ball_manager", 
+                name: "花球管理员", 
+                description: "负责班级花球的维护和保养",
+                category: "manage"
+            },
+            { 
+                id: "plant_manager", 
+                name: "植物管理员", 
+                description: "负责班级植物的养护",
+                category: "manage"
+            },
+            { 
+                id: "marker_manager", 
+                name: "水彩笔管理员", 
+                description: "负责班级水彩笔的管理",
+                category: "manage"
+            },
+            { 
+                id: "certificate_manager", 
+                name: "奖状管理员", 
+                description: "负责班级奖状的保管和展示",
+                category: "manage"
+            }
+        ];
+        
+        // 全局数据存储
+        let appData = {
+            currentUser: null,
+            currentClass: null,
+            positions: [],
+            customPositions: [],
+            intentions: [],
+            students: [],
+            announcements: [],
+            cloudStorage: new CloudStorage()
+        };
+        
+        // UI工具函数
+        function showLoadingOverlay(show, text = '数据加载中... 请稍候') {
+            const overlay = document.getElementById('loadingOverlay');
+            const textElement = document.getElementById('loadingText');
+            
+            if (textElement) {
+                textElement.textContent = text;
+            }
+            
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+        
+        function showToast(message, type = 'info', duration = 3000) {
+            const toast = document.getElementById('toastMessage');
+            
+            const bgColors = {
+                success: '#2e7d32',
+                error: '#d32f2f',
+                warning: '#f57c00',
+                info: '#1b5e20'
+            };
+            
+            toast.textContent = message;
+            toast.style.background = bgColors[type] || bgColors.info;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, duration);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-CN') + ' ' + date.toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'});
+        }
+        
+        // 初始化选项卡
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    const container = this.closest('.tab-container');
+                    
+                    // 更新活跃选项卡
+                    container.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 更新活跃内容
+                    container.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    container.querySelector(`#${tabId}-tab`).classList.add('active');
+                });
+            });
+        }
+        
+        // 注册班级
+        async function registerClass() {
+            const teacherName = document.getElementById('teacherName').value.trim();
+            const className = document.getElementById('className').value.trim();
+            const email = document.getElementById('teacherEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!teacherName || !className || !password) {
+                showToast('请填写完整信息', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast('两次输入的密码不一致', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showToast('密码长度不能少于6位', 'error');
+                return;
+            }
+            
+            showLoadingOverlay(true, '正在创建班级...');
+            
+            try {
+                const result = await appData.cloudStorage.apiRequest('/classes', 'POST', {
+                    name: className,
+                    teacherName: teacherName,
+                    teacherEmail: email,
+                    password: password
+                });
+                
+                if (result.success) {
+                    showToast('班级创建成功！请使用班级代码登录', 'success');
+                    
+                    // 切换到登录页并填充班级代码
+                    document.querySelector('[data-tab="login"]').click();
+                    document.getElementById('loginClassCode').value = result.data.code;
+                    
+                    // 清空表单
+                    document.getElementById('teacherName').value = '';
+                    document.getElementById('className').value = '';
+                    document.getElementById('teacherEmail').value = '';
+                    document.getElementById('registerPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                showToast('创建失败，请检查网络连接', 'error');
+                console.error(error);
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        // 加入班级
+        async function joinClass() {
+            const classCode = document.getElementById('joinClassCode').value.trim().toUpperCase();
+            const studentName = document.getElementById('joinStudentName').value.trim();
+            const studentId = document.getElementById('joinStudentId').value.trim();
+            
+            if (!classCode || !studentName) {
+                showToast('请填写班级代码和姓名', 'error');
+                return;
+            }
+            
+            showLoadingOverlay(true, '正在加入班级...');
+            
+            try {
+                const result = await appData.cloudStorage.apiRequest('/auth', 'POST', {
+                    code: classCode,
+                    role: 'student',
+                    name: studentName,
+                    studentId: studentId
+                });
+                
+                if (result.success) {
+                    // 登录成功
+                    appData.currentUser = result.data;
+                    loadClassData(result.data.classId);
+                    showToast('加入班级成功！', 'success');
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                showToast('加入失败，请检查网络连接', 'error');
+                console.error(error);
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        // 登录
+        async function login() {
+            const classCode = document.getElementById('loginClassCode').value.trim().toUpperCase();
+            const role = document.getElementById('loginUsername').value;
+            const studentId = document.getElementById('studentId').value.trim();
+            const password = document.getElementById('teacherPassword').value;
+            
+            if (!classCode) {
+                showToast('请输入班级代码', 'error');
+                return;
+            }
+            
+            if (!role) {
+                showToast('请选择身份', 'error');
+                return;
+            }
+            
+            showLoadingOverlay(true, '正在登录...');
+            
+            try {
+                const result = await appData.cloudStorage.apiRequest('/auth', 'POST', {
+                    code: classCode,
+                    role: role,
+                    name: studentId,
+                    studentId: studentId,
+                    password: password
+                });
+                
+                if (result.success) {
+                    appData.currentUser = result.data;
+                    loadClassData(result.data.classId);
+                    showToast('登录成功！', 'success');
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (error) {
+                showToast('登录失败，请检查网络连接', 'error');
+                console.error(error);
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        // 加载班级数据
+        async function loadClassData(classId) {
+            showLoadingOverlay(true, '加载班级数据...');
+            
+            try {
+                // 加载班级信息
+                const classes = JSON.parse(localStorage.getItem('cloud_classes') || '{}');
+                appData.currentClass = classes[classId];
+                
+                if (!appData.currentClass) {
+                    showToast('班级数据加载失败', 'error');
+                    return;
+                }
+                
+                // 加载岗位数据
+                const positionsResult = await appData.cloudStorage.apiRequest('/positions', 'GET', { classId });
+                if (positionsResult.success) {
+                    appData.positions = positionsResult.data.filter(p => p.category !== 'custom');
+                    appData.customPositions = positionsResult.data.filter(p => p.category === 'custom');
+                }
+                
+                // 加载意向数据
+                const intentionsResult = await appData.cloudStorage.apiRequest('/intentions', 'GET', { classId });
+                if (intentionsResult.success) {
+                    appData.intentions = intentionsResult.data;
+                }
+                
+                // 更新UI
+                updateClassInfo();
+                switchToMainInterface();
+                renderAllData();
+                
+            } catch (error) {
+                showToast('数据加载失败', 'error');
+                console.error(error);
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        // 更新班级信息显示
+        function updateClassInfo() {
+            if (!appData.currentClass) return;
+            
+            // 更新标题
+            document.getElementById('classTitle').textContent = appData.currentClass.name + ' - 班干部意向收集';
+            document.getElementById('classSubtitle').textContent = `班主任: ${appData.currentClass.teacherName}`;
+            
+            // 更新班级管理信息
+            document.getElementById('currentClassName').textContent = appData.currentClass.name;
+            document.getElementById('currentTeacherName').textContent = appData.currentClass.teacherName;
+            document.getElementById('classCreateTime').textContent = formatDate(appData.currentClass.createdAt);
+            document.getElementById('classCode').textContent = appData.currentClass.code;
+            
+            // 更新邀请链接
+            const inviteLink = `${window.location.origin}${window.location.pathname}?class=${appData.currentClass.code}`;
+            document.getElementById('inviteLink').value = inviteLink;
+            
+            // 更新公告
+            if (appData.currentClass.announcements && appData.currentClass.announcements.length > 0) {
+                const latestAnnouncement = appData.currentClass.announcements[appData.currentClass.announcements.length - 1];
+                document.getElementById('announcementContent').textContent = latestAnnouncement.content;
+            }
+            
+            // 更新学生数量
+            const studentCount = appData.currentClass.students.length;
+            document.getElementById('studentCount').textContent = studentCount;
+            document.getElementById('intentionCount').textContent = appData.intentions.length;
+            
+            // 渲染学生列表
+            renderStudentsList();
+            
+            // 渲染统计数据
+            renderStatistics();
+        }
+        
+        // 渲染所有数据
+        function renderAllData() {
+            renderPositions();
+            renderCustomPositions();
+            updatePrioritySelectOptions();
+            renderMyApplications();
+            renderAdminPositions();
+            renderStatistics();
+        }
+        
+        // 渲染岗位
+        function renderPositions() {
+            const categories = ['important', 'special', 'academic', 'manage'];
+            const stats = getPositionStatistics();
+            
+            categories.forEach(category => {
+                const container = document.getElementById(`${category}Positions`);
+                if (!container) return;
+                
+                const positions = appData.positions.filter(p => p.category === category);
+                container.innerHTML = positions.map(position => {
+                    const count = stats[position.name] || 0;
+                    return renderPositionCard(position, category, count);
+                }).join('');
+            });
+        }
+        
+        function renderAdminPositions() {
+            const categories = ['important', 'special', 'academic', 'manage'];
+            const stats = getPositionStatistics();
+            
+            categories.forEach(category => {
+                const container = document.getElementById(`admin${category.charAt(0).toUpperCase() + category.slice(1)}Positions`);
+                if (!container) return;
+                
+                const positions = appData.positions.filter(p => p.category === category);
+                container.innerHTML = positions.map(position => {
+                    const count = stats[position.name] || 0;
+                    return `
+                        <div class="position-card" onclick="showApplicantsForPosition('${position.name}')">
+                            <div class="role-badge ${category}-role">${getCategoryLabel(category)}</div>
+                            <h3>${position.name}</h3>
+                            <p>${position.description}</p>
+                            <div class="applicant-count">${count}</div>
+                        </div>
+                    `;
+                }).join('');
+            });
+            
+            // 渲染自定义岗位
+            const adminCustomContainer = document.getElementById('adminCustomPositions');
+            if (adminCustomContainer) {
+                adminCustomContainer.innerHTML = appData.customPositions.map(position => {
+                    const count = stats[position.name] || 0;
+                    return `
+                        <div class="position-card" onclick="showApplicantsForPosition('${position.name}')">
+                            <div class="role-badge custom-role">自定义</div>
+                            <h3>${position.name}</h3>
+                            <p>${position.description || '暂无描述'}</p>
+                            <div class="applicant-count">${count}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+        
+        function renderPositionCard(position, category, count = 0) {
+            return `
+                <div class="position-card">
+                    ${count > 0 ? `<div class="applicant-count">${count}</div>` : ''}
+                    <div class="role-badge ${category}-role">${getCategoryLabel(category)}</div>
+                    <h3>${position.name}</h3>
+                    <p>${position.description || '暂无描述'}</p>
+                </div>
+            `;
+        }
+        
+        function getCategoryLabel(category) {
+            const labels = {
+                'important': '重要岗位',
+                'special': '专项岗位',
+                'academic': '学科岗位',
+                'manage': '承包管理',
+                'custom': '自定义'
+            };
+            return labels[category] || '其他';
+        }
+        
+        function getPositionStatistics() {
+            const stats = {};
+            appData.intentions.forEach(intention => {
+                [intention.priority1, intention.priority2, intention.priority3].forEach(position => {
+                    if (position) {
+                        stats[position] = (stats[position] || 0) + 1;
+                    }
+                });
+            });
+            return stats;
+        }
+        
+        function renderCustomPositions() {
+            const container = document.getElementById('customPositionsList');
+            if (!container) return;
+            
+            if (appData.customPositions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">暂无自定义岗位</p>';
+            } else {
+                container.innerHTML = appData.customPositions.map(position => `
+                    <div class="custom-position-item">
+                        <div>
+                            <div class="custom-position-name">${position.name}</div>
+                            <div class="custom-position-description">${position.description || '暂无描述'}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function updatePrioritySelectOptions() {
+            const selects = ['priority1', 'priority2', 'priority3'];
+            const allPositions = [
+                ...appData.positions.map(p => p.name),
+                ...appData.customPositions.map(p => p.name)
+            ];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                // 保留第一个空选项
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+                
+                allPositions.forEach(position => {
+                    const option = document.createElement('option');
+                    option.value = position;
+                    option.textContent = position;
+                    select.appendChild(option);
+                });
+            });
+            
+            // 更新班级名称
+            if (appData.currentClass) {
+                document.getElementById('class').value = appData.currentClass.name;
+            }
+        }
+        
+        function renderMyApplications() {
+            const container = document.getElementById('myApplicationsContainer');
+            if (!container || !appData.currentUser) return;
+            
+            if (appData.currentUser.role !== 'student') return;
+            
+            const myApplications = appData.intentions.filter(app => 
+                app.name === appData.currentUser.studentName
+            );
+            
+            if (myApplications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-seedling"></i>
+                        <p>您还没有提交任何意向</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = myApplications.map((app, index) => `
+                    <div class="my-application-item">
+                        <div class="my-application-header">
+                            <div>
+                                <strong>申请 #${index + 1}</strong>
+                                <span style="margin-left: 10px; color: #666; font-size: 0.9rem;">${formatDate(app.submittedAt)}</span>
+                            </div>
+                            <div class="my-application-status status-pending">待审核</div>
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <div><strong>第一志愿:</strong> ${app.priority1 || '未选择'}</div>
+                            <div><strong>第二志愿:</strong> ${app.priority2 || '未选择'}</div>
+                            <div><strong>第三志愿:</strong> ${app.priority3 || '未选择'}</div>
+                        </div>
+                        <div>
+                            <strong>申请理由:</strong>
+                            <p style="margin-top: 5px; color: #666;">${app.experience || '无'}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function renderStatistics() {
+            const container = document.getElementById('statsGrid');
+            if (!container) return;
+            
+            const totalStudents = appData.currentClass.students.length;
+            const totalIntentions = appData.intentions.length;
+            const uniqueApplicants = new Set(appData.intentions.map(i => i.name)).size;
+            const popularPosition = getMostPopularPosition();
+            
+            container.innerHTML = `
+                <div class="stat-card">
+                    <i class="fas fa-users" style="font-size: 2rem; color: #4caf50;"></i>
+                    <div class="stat-number">${totalStudents}</div>
+                    <div class="stat-label">班级人数</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-file-alt" style="font-size: 2rem; color: #2196f3;"></i>
+                    <div class="stat-number">${totalIntentions}</div>
+                    <div class="stat-label">意向提交</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-check" style="font-size: 2rem; color: #ff9800;"></i>
+                    <div class="stat-number">${uniqueApplicants}</div>
+                    <div class="stat-label">已申请人数</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star" style="font-size: 2rem; color: #9c27b0;"></i>
+                    <div class="stat-number">${popularPosition.count || 0}</div>
+                    <div class="stat-label">${popularPosition.name || '暂无'}</div>
+                </div>
+            `;
+            
+            document.getElementById('statsCard').style.display = 'block';
+        }
+        
+        function getMostPopularPosition() {
+            const stats = getPositionStatistics();
+            let maxCount = 0;
+            let popularPosition = '';
+            
+            Object.entries(stats).forEach(([position, count]) => {
+                if (count > maxCount) {
+                    maxCount = count;
+                    popularPosition = position;
+                }
+            });
+            
+            return { name: popularPosition, count: maxCount };
+        }
+        
+        function renderStudentsList() {
+            const container = document.getElementById('studentsList');
+            if (!container || !appData.currentClass) return;
+            
+            const students = appData.currentClass.students;
+            
+            if (students.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-graduate"></i>
+                        <p>暂无学生加入</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <h3 style="color: #1b5e20; margin-bottom: 15px;">学生列表 (${students.length}人)</h3>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${students.map(student => `
+                            <div class="applicant-item" style="margin-bottom: 10px;">
+                                <div class="applicant-header">
+                                    <div class="applicant-name">${student.name}</div>
+                                    <div>学号: ${student.studentId || '未填写'}</div>
+                                </div>
+                                <div style="color: #666; font-size: 0.9rem;">
+                                    加入时间: ${formatDate(student.joinedAt)}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+        
+        // 事件处理函数
+        async function submitIntention(e) {
+            e.preventDefault();
+            
+            if (!appData.currentUser || appData.currentUser.role !== 'student') {
+                showToast('请先登录学生账号', 'error');
+                return;
+            }
+            
+            const formData = {
+                classId: appData.currentUser.classId,
+                name: document.getElementById('name').value.trim(),
+                studentId: document.getElementById('studentIdDisplay').value.trim(),
+                className: document.getElementById('class').value,
+                priority1: document.getElementById('priority1').value,
+                priority2: document.getElementById('priority2').value,
+                priority3: document.getElementById('priority3').value,
+                experience: document.getElementById('experience').value.trim()
+            };
+            
+            if (!formData.name || !formData.priority1) {
+                showToast('请填写姓名和第一志愿', 'error');
+                return;
+            }
+            
+            showLoadingOverlay(true, '提交中...');
+            
+            try {
+                const result = await appData.cloudStorage.apiRequest('/intentions', 'POST', formData);
+                
+                if (result.success) {
+                    appData.intentions.push(result.data);
+                    showToast('意向提交成功！', 'success');
+                    
+                    // 更新UI
+                    renderMyApplications();
+                    renderStatistics();
+                    
+                    // 清空表单
+                    document.getElementById('name').value = '';
+                    document.getElementById('experience').value = '';
+                } else {
+                    showToast('提交失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showToast('提交失败，请检查网络', 'error');
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        async function addCustomPosition() {
+            if (!appData.currentUser) {
+                showToast('请先登录', 'error');
+                return;
+            }
+            
+            const name = document.getElementById('customPositionName').value.trim();
+            const description = document.getElementById('customPositionDescription').value.trim();
+            const reason = document.getElementById('customPositionReason').value.trim();
+            
+            if (!name || !description) {
+                showToast('请填写岗位名称和描述', 'error');
+                return;
+            }
+            
+            showLoadingOverlay(true, '添加中...');
+            
+            try {
+                const result = await appData.cloudStorage.apiRequest('/positions', 'POST', {
+                    classId: appData.currentUser.classId,
+                    custom: true,
+                    name: name,
+                    description: description,
+                    reason: reason,
+                    createdBy: appData.currentUser.role === 'student' ? 
+                        appData.currentUser.studentName : appData.currentUser.teacherName
+                });
+                
+                if (result.success) {
+                    appData.customPositions.push(result.data);
+                    showToast('自定义岗位添加成功！', 'success');
+                    
+                    // 更新UI
+                    renderCustomPositions();
+                    updatePrioritySelectOptions();
+                    
+                    // 清空表单
+                    document.getElementById('customPositionName').value = '';
+                    document.getElementById('customPositionDescription').value = '';
+                    document.getElementById('customPositionReason').value = '';
+                    document.getElementById('customPositionForm').classList.remove('active');
+                } else {
+                    showToast('添加失败: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showToast('添加失败，请检查网络', 'error');
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        function showApplicantsForPosition(positionName) {
+            const container = document.getElementById('adminResultsContainer');
+            if (!container) return;
+            
+            const applicants = appData.intentions.filter(app => 
+                app.priority1 === positionName || 
+                app.priority2 === positionName || 
+                app.priority3 === positionName
+            );
+            
+            if (applicants.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users-slash"></i>
+                        <p>${positionName} 暂无申请人</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <h3 style="color: #1b5e20; margin-bottom: 20px;">${positionName} 申请人列表 (${applicants.length}人)</h3>
+                    ${applicants.map(app => `
+                        <div class="applicant-item">
+                            <div class="applicant-header">
+                                <div class="applicant-name">${app.name} ${app.studentId ? `(${app.studentId})` : ''}</div>
+                                <div class="applicant-priorities">
+                                    ${app.priority1 === positionName ? '<span class="priority1">第一志愿</span>' : ''}
+                                    ${app.priority2 === positionName ? '<span>第二志愿</span>' : ''}
+                                    ${app.priority3 === positionName ? '<span>第三志愿</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="applicant-experience">
+                                <strong>申请理由:</strong> ${app.experience || '无'}
+                            </div>
+                            <div style="margin-top: 10px; font-size: 0.85rem; color: #888;">
+                                提交时间: ${formatDate(app.submittedAt)}
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+            }
+        }
+        
+        function exportData() {
+            if (appData.intentions.length === 0) {
+                showToast('暂无数据可导出', 'warning');
+                return;
+            }
+            
+            try {
+                const dataForExport = appData.intentions.map(app => ({
+                    姓名: app.name,
+                    学号: app.studentId || '',
+                    班级: app.className || appData.currentClass.name,
+                    第一志愿: app.priority1 || '',
+                    第二志愿: app.priority2 || '',
+                    第三志愿: app.priority3 || '',
+                    申请理由: app.experience || '',
+                    提交时间: formatDate(app.submittedAt),
+                    状态: app.status || 'pending'
+                }));
+                
+                const headers = Object.keys(dataForExport[0]);
+                const csvRows = [
+                    headers.join(','),
+                    ...dataForExport.map(row => 
+                        headers.map(header => {
+                            const cell = row[header] || '';
+                            const escaped = String(cell).replace(/"/g, '""');
+                            return `"${escaped}"`;
+                        }).join(',')
+                    )
+                ].join('\n');
+                
+                const blob = new Blob(['\ufeff' + csvRows], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${appData.currentClass.name}_意向收集_${new Date().toLocaleDateString('zh-CN')}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showToast('数据导出成功！', 'success');
+            } catch (error) {
+                console.error('导出失败:', error);
+                showToast('导出失败，请重试', 'error');
+            }
+        }
+        
+        function copyInviteLink() {
+            const inviteLink = document.getElementById('inviteLink');
+            inviteLink.select();
+            inviteLink.setSelectionRange(0, 99999);
+            
+            try {
+                navigator.clipboard.writeText(inviteLink.value);
+                showToast('邀请链接已复制到剪贴板', 'success');
+            } catch (error) {
+                // 降级方案
+                document.execCommand('copy');
+                showToast('链接已复制', 'success');
+            }
+        }
+        
+        function shareClass(platform) {
+            const link = document.getElementById('inviteLink').value;
+            const className = appData.currentClass.name;
+            
+            switch (platform) {
+                case 'wechat':
+                    showToast('请使用微信扫一扫分享二维码', 'info');
+                    break;
+                case 'qq':
+                    window.open(`https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(link)}&title=${encodeURIComponent(className + ' 班干部意向收集')}`);
+                    break;
+                case 'link':
+                    copyInviteLink();
+                    break;
+            }
+        }
+        
+        async function saveClassSettings() {
+            if (!appData.currentUser || appData.currentUser.role !== 'teacher') {
+                showToast('只有班主任可以修改设置', 'error');
+                return;
+            }
+            
+            const className = document.getElementById('editClassName').value.trim();
+            const announcement = document.getElementById('editAnnouncement').value.trim();
+            const deadline = document.getElementById('deadlineDate').value;
+            
+            if (!className) {
+                showToast('班级名称不能为空', 'error');
+                return;
+            }
+            
+            showLoadingOverlay(true, '保存设置...');
+            
+            try {
+                // 更新班级信息
+                const classes = JSON.parse(localStorage.getItem('cloud_classes') || '{}');
+                const classId = appData.currentUser.classId;
+                
+                if (classes[classId]) {
+                    classes[classId].name = className;
+                    
+                    if (announcement) {
+                        if (!classes[classId].announcements) {
+                            classes[classId].announcements = [];
+                        }
+                        classes[classId].announcements.push({
+                            content: announcement,
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                    
+                    if (deadline) {
+                        if (!classes[classId].settings) {
+                            classes[classId].settings = {};
+                        }
+                        classes[classId].settings.deadline = deadline;
+                    }
+                    
+                    localStorage.setItem('cloud_classes', JSON.stringify(classes));
+                    appData.currentClass = classes[classId];
+                    
+                    showToast('设置保存成功', 'success');
+                    updateClassInfo();
+                }
+            } catch (error) {
+                showToast('保存失败', 'error');
+                console.error(error);
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newTeacherPassword').value;
+            const confirmPassword = document.getElementById('confirmTeacherPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showToast('请填写所有密码字段', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showToast('两次输入的新密码不一致', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showToast('新密码长度不能少于6位', 'error');
+                return;
+            }
+            
+            // 验证当前密码
+            if (currentPassword !== appData.currentClass.password) {
+                showToast('当前密码错误', 'error');
+                return;
+            }
+            
+            showLoadingOverlay(true, '修改密码...');
+            
+            try {
+                // 更新密码
+                const classes = JSON.parse(localStorage.getItem('cloud_classes') || '{}');
+                const classId = appData.currentUser.classId;
+                
+                if (classes[classId]) {
+                    classes[classId].password = newPassword;
+                    localStorage.setItem('cloud_classes', JSON.stringify(classes));
+                    appData.currentClass = classes[classId];
+                    
+                    showToast('密码修改成功', 'success');
+                    
+                    // 清空表单
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newTeacherPassword').value = '';
+                    document.getElementById('confirmTeacherPassword').value = '';
+                }
+            } catch (error) {
+                showToast('修改失败', 'error');
+                console.error(error);
+            } finally {
+                showLoadingOverlay(false);
+            }
+        }
+        
+        function switchToMainInterface() {
+            document.getElementById('loginPanel').classList.remove('active-panel');
+            document.getElementById('mainSystem').style.display = 'block';
+            
+            // 根据角色显示相应面板
+            if (appData.currentUser.role === 'teacher') {
+                switchToTeacherPanel();
+            } else {
+                switchToStudentPanel();
+            }
+        }
+        
+        function switchToStudentPanel() {
+            hideAllPanels();
+            document.getElementById('studentPanel').classList.add('active-panel');
+            updateActiveButton('studentBtn');
+            document.getElementById('statsCard').style.display = 'block';
+        }
+        
+        function switchToTeacherPanel() {
+            hideAllPanels();
+            document.getElementById('adminPanel').classList.add('active-panel');
+            updateActiveButton('teacherBtn');
+            document.getElementById('statsCard').style.display = 'block';
+        }
+        
+        function switchToManagePanel() {
+            if (!appData.currentUser || appData.currentUser.role !== 'teacher') {
+                showToast('只有班主任可以访问班级管理', 'error');
+                return;
+            }
+            
+            hideAllPanels();
+            document.getElementById('managePanel').classList.add('active-panel');
+            updateActiveButton('manageBtn');
+            document.getElementById('statsCard').style.display = 'none';
+        }
+        
+        function hideAllPanels() {
+            document.getElementById('studentPanel').classList.remove('active-panel');
+            document.getElementById('adminPanel').classList.remove('active-panel');
+            document.getElementById('managePanel').classList.remove('active-panel');
+        }
+        
+        function updateActiveButton(activeBtnId) {
+            ['studentBtn', 'teacherBtn', 'manageBtn'].forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.classList.remove('active');
+                }
+            });
+            document.getElementById(activeBtnId).classList.add('active');
+        }
+        
+        function logout() {
+            if (confirm('确定要退出系统吗？')) {
+                appData.currentUser = null;
+                appData.currentClass = null;
+                
+                document.getElementById('mainSystem').style.display = 'none';
+                document.getElementById('loginPanel').classList.add('active-panel');
+                
+                // 重置表单
+                document.getElementById('loginClassCode').value = '';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('studentId').value = '';
+                document.getElementById('teacherPassword').value = '';
+                
+                showToast('已退出系统', 'info');
+            }
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化选项卡
+            initTabs();
+            
+            // 绑定事件
+            document.getElementById('loginUsername').addEventListener('change', function() {
+                const selectedRole = this.value;
+                if (selectedRole === 'student') {
+                    document.getElementById('studentIdGroup').style.display = 'block';
+                    document.getElementById('teacherPasswordGroup').style.display = 'none';
+                } else if (selectedRole === 'teacher') {
+                    document.getElementById('studentIdGroup').style.display = 'none';
+                    document.getElementById('teacherPasswordGroup').style.display = 'block';
+                } else {
+                    document.getElementById('studentIdGroup').style.display = 'none';
+                    document.getElementById('teacherPasswordGroup').style.display = 'none';
+                }
+            });
+            
+            document.getElementById('loginBtn').addEventListener('click', login);
+            document.getElementById('registerBtn').addEventListener('click', registerClass);
+            document.getElementById('joinBtn').addEventListener('click', joinClass);
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('studentBtn').addEventListener('click', switchToStudentPanel);
+            document.getElementById('teacherBtn').addEventListener('click', switchToTeacherPanel);
+            document.getElementById('manageBtn').addEventListener('click', switchToManagePanel);
+            document.getElementById('customPositionToggle').addEventListener('click', function() {
+                document.getElementById('customPositionForm').classList.toggle('active');
+            });
+            document.getElementById('addCustomPositionBtn').addEventListener('click', addCustomPosition);
+            document.getElementById('exportDataBtn').addEventListener('click', exportData);
+            document.getElementById('intentionForm').addEventListener('submit', submitIntention);
+            document.getElementById('saveClassSettingsBtn').addEventListener('click', saveClassSettings);
+            document.getElementById('changePasswordBtn').addEventListener('click', changePassword);
+            document.getElementById('generateReportBtn').addEventListener('click', function() {
+                showToast('分析报告生成中...', 'info');
+                // 这里可以添加生成报告的逻辑
+                setTimeout(() => showToast('报告生成完成！', 'success'), 1500);
+            });
+            
+            // 检查URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const classCode = urlParams.get('class');
+            if (classCode) {
+                document.getElementById('loginClassCode').value = classCode;
+                document.querySelector('[data-tab="login"]').click();
+            }
+            
+            // 检查是否有已保存的登录状态
+            const savedUser = localStorage.getItem('currentUser');
+            const savedClass = localStorage.getItem('currentClass');
+            
+            if (savedUser && savedClass) {
+                try {
+                    appData.currentUser = JSON.parse(savedUser);
+                    appData.currentClass = JSON.parse(savedClass);
+                    loadClassData(appData.currentUser.classId);
+                } catch (error) {
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('currentClass');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
